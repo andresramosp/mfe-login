@@ -3,7 +3,11 @@ const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlug
 const deps = require("./package.json");
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: 'https://module-federation-mfe-login.herokuapp.com',
+  publicPath: process.env.VUE_APP_REMOTES === 'local' ?
+   // DEVELOPMENT
+    'http://localhost:9797/' :
+    // PRODUCTION
+    'https://module-federation-mfe-login.herokuapp.com',
   devServer: { port: 9797 },
   configureWebpack: {
     optimization: {
@@ -13,22 +17,23 @@ module.exports = defineConfig({
       new ModuleFederationPlugin({
         name: 'MfeLogin',
         filename: 'remoteEntry.js',
-        remotes: {
-          ModuleAuth: 'ModuleAuth@https://module-federation-module-auth.herokuapp.com/remoteEntry.js'
-        },
+        remotes: process.env.VUE_APP_REMOTES === 'local' ?
+          // DEVELOPMENT
+          {
+            ModuleAuth: 'ModuleAuth@http://localhost:9898/remoteEntry.js',
+          } :
+          // PRODUCTION
+          {
+            ModuleAuth: 'ModuleAuth@https://module-federation-module-auth.herokuapp.com/remoteEntry.js'
+          },
         exposes: {
-           './MfeLogin': './src/bootstrap.js' // implica wrapper en consumer que use el mount exportado por main
-          //'./mainComponent': './src/components/MainComponent.vue'
+           './MfeLogin': './src/bootstrap.js' 
         },
         shared: {
           vue: {
-            // eager: true,
             singleton: true,
             requiredVersion: deps.vue
           },
-          // 'element-plus': {
-          //   eager: true
-          // }
         },
         shared: require('./package.json').dependencies,
       })
