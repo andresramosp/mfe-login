@@ -65,9 +65,10 @@ export default {
   padding: 10px;
   background-color: lightgray;
   position: absolute;
-  right: 0px;
-  top: 0px;
+  right: 45px;
+  top: 20px;
   width: 200px;
   background-color: #20b2aa;
+  border: solid 2px blueviolet; 
 }
 </style>
