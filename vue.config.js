@@ -30,12 +30,14 @@ module.exports = defineConfig({
            './MfeLogin': './src/bootstrap.js' 
         },
         shared: {
+          ...require('./package.json').dependencies,
           vue: {
             singleton: true,
-            requiredVersion: deps.vue
           },
+          'element-plus': {
+            singleton: true
+          }
         },
-        shared: require('./package.json').dependencies,
       })
     ]
   }
